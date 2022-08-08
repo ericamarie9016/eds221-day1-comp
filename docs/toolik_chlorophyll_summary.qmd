@@ -1,0 +1,51 @@
+---
+title: "Toolik Lake Chlorophyll"
+format: html
+editor: visual
+execute:
+  echo: true
+  warning: false
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+## Read in data and Clean up data
+
+```{r}
+toolik_chlorophyll <- read_csv(here::here("data", 
+                                          "data-raw", 
+                                          "toolik_chlorophyll.csv"),
+                               na = c("."))  %>% # stating missing values
+  janitor::clean_names()
+```
+
+### Review the data
+
+```{r}
+skimr::skim(toolik_chlorophyll)
+```
+
+## Create Graph
+
+```{r}
+chlorophyll_pprod_graph <- ggplot(data = toolik_chlorophyll, 
+                                  aes(x = active_chl_a_ug_l,
+                                      y = pprod_mg_available_c_m3_d)) +
+  geom_point()
+
+chlorophyll_pprod_graph
+```
+
+### Save plot
+
+```{r}
+ggsave(plot = chlorophyll_pprod_graph, 
+       here("figs", "chlorophyll_plot_name.jpg"),
+       width = 8,
+       height = 8,
+       dpi = 200) # resolution
+```
